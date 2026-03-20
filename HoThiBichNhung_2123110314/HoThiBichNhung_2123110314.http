@@ -1,0 +1,6 @@
+@HoThiBichNhung_2123110314_HostAddress = http://localhost:5223
+
+GET {{HoThiBichNhung_2123110314_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
