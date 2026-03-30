@@ -11,7 +11,7 @@ namespace HoThiBichNhung_2123110314.Models
         [Required]
         public string Name { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")] // 🔥 FIX WARNING DECIMAL
+        [Column(TypeName = "decimal(18,2)")] 
         public decimal Price { get; set; }
 
         public string? Description { get; set; }
@@ -20,14 +20,14 @@ namespace HoThiBichNhung_2123110314.Models
 
         public int Quantity { get; set; }
 
-        // FK
+   
         public long CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
-        [JsonIgnore] // 🔥 TRÁNH LOOP + LỖI POST
+        [JsonIgnore] 
         public Category? Category { get; set; }
 
-        [JsonIgnore] // 🔥 TRÁNH LOOP
+        [JsonIgnore] 
         public ICollection<OrderDetail>? OrderDetails { get; set; }
     }
 }

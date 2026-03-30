@@ -22,6 +22,7 @@ namespace HoThiBichNhung_2123110314.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+<<<<<<< HEAD
             modelBuilder.Entity("HoThiBichNhung_2123110314.Models.Category", b =>
                 {
                     b.Property<long>("Id")
@@ -135,6 +136,8 @@ namespace HoThiBichNhung_2123110314.Migrations
                     b.ToTable("Products");
                 });
 
+=======
+>>>>>>> 960fd61f74f2afc414de1551306f337ff253e80b
             modelBuilder.Entity("HoThiBichNhung_2123110314.Models.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -160,6 +163,7 @@ namespace HoThiBichNhung_2123110314.Migrations
 
                     b.ToTable("Students");
                 });
+<<<<<<< HEAD
 
             modelBuilder.Entity("HoThiBichNhung_2123110314.Models.User", b =>
                 {
@@ -259,6 +263,8 @@ namespace HoThiBichNhung_2123110314.Migrations
                 {
                     b.Navigation("Orders");
                 });
+=======
+>>>>>>> 960fd61f74f2afc414de1551306f337ff253e80b
 #pragma warning restore 612, 618
         }
     }

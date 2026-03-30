@@ -12,6 +12,7 @@ namespace HoThiBichNhung_2123110314.Data
         }
 
         public DbSet<Student> Students { get; set; }
+<<<<<<< HEAD
 
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -39,4 +40,7 @@ namespace HoThiBichNhung_2123110314.Data
     }
 
 
+=======
+    }
+>>>>>>> 960fd61f74f2afc414de1551306f337ff253e80b
 }
