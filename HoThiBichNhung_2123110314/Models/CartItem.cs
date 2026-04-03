@@ -3,23 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace HoThiBichNhung_2123110314.Models
 {
-    public class OrderDetail
+    public class CartItem
     {
         public long Id { get; set; }
 
-        public long OrderId { get; set; }
+        public long CartId { get; set; }
 
         public long ProductId { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")] // 🔥 tránh lỗi decimal
-        public decimal Price { get; set; }
-
         public int Quantity { get; set; }
 
-        // 🔥 tránh loop JSON
-        [ForeignKey("OrderId")]
+        [ForeignKey("CartId")]
         [JsonIgnore]
-        public Order? Order { get; set; }
+        public Cart? Cart { get; set; }
 
         [ForeignKey("ProductId")]
         [JsonIgnore]

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace HoThiBichNhung_2123110314.Models
 {
@@ -24,7 +25,7 @@ namespace HoThiBichNhung_2123110314.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // Navigation
+        [JsonIgnore] // ❌ tránh loop
         public ICollection<Order>? Orders { get; set; }
     }
 }

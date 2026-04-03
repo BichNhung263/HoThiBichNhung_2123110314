@@ -3,15 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace HoThiBichNhung_2123110314.Models
 {
-    public class Order
+    public class Cart
     {
         public long Id { get; set; }
 
         public long UserId { get; set; }
-
-        public decimal TotalPrice { get; set; }
-
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
@@ -19,8 +15,7 @@ namespace HoThiBichNhung_2123110314.Models
         [JsonIgnore]
         public User? User { get; set; }
 
-        // 🔥 THÊM DÒNG NÀY (FIX LỖI)
         [JsonIgnore]
-        public ICollection<OrderDetail>? OrderDetails { get; set; }
+        public ICollection<CartItem>? CartItems { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using HoThiBichNhung_2123110314.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace HoThiBichNhung_2123110314.Data
 {
-
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -12,7 +12,6 @@ namespace HoThiBichNhung_2123110314.Data
         }
 
         public DbSet<Student> Students { get; set; }
-<<<<<<< HEAD
 
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -20,6 +19,10 @@ namespace HoThiBichNhung_2123110314.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
 
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,9 +41,4 @@ namespace HoThiBichNhung_2123110314.Data
                 .HasPrecision(18, 2);
         }
     }
-
-
-=======
-    }
->>>>>>> 960fd61f74f2afc414de1551306f337ff253e80b
 }

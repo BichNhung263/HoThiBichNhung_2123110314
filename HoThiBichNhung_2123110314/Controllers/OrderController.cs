@@ -16,47 +16,111 @@ namespace HoThiBichNhung_2123110314.Controllers
             _context = context;
         }
 
+        // 🔥 GET ALL (User + OrderDetails)
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<IActionResult> GetOrders()
         {
-            return await _context.Orders
+            var orders = await _context.Orders
+                .Include(o => o.User)
                 .Include(o => o.OrderDetails)
+                .Select(o => new
+                {
+                    o.Id,
+                    o.TotalPrice,
+                    o.Status,
+                    o.CreatedAt,
+
+                    User = new
+                    {
+                        o.User.Id,
+                        o.User.Name,
+                        o.User.Email
+                    },
+
+                    OrderDetails = o.OrderDetails.Select(od => new
+                    {
+                        od.Id,
+                        od.ProductId,
+                        od.Price,
+                        od.Quantity
+                    })
+                })
                 .ToListAsync();
+
+            return Ok(orders);
         }
 
+        // 🔥 GET BY ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(long id)
+        public async Task<IActionResult> GetOrder(long id)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderDetails)
+                .Where(o => o.Id == id)
+                .Select(o => new
+                {
+                    o.Id,
+                    o.TotalPrice,
+                    o.Status,
+                    o.CreatedAt,
+
+                    User = new
+                    {
+                        o.User.Id,
+                        o.User.Name,
+                        o.User.Email
+                    },
+
+                    OrderDetails = o.OrderDetails.Select(od => new
+                    {
+                        od.Id,
+                        od.ProductId,
+                        od.Price,
+                        od.Quantity
+                    })
+                })
+                .FirstOrDefaultAsync();
+
             if (order == null) return NotFound();
 
-            return order;
+            return Ok(order);
         }
 
+        // 🔥 POST
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<IActionResult> PostOrder(Order order)
         {
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+            return Ok(order);
         }
 
+        // 🔥 PUT (FIX lỗi 500)
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(long id, Order order)
         {
-            if (id != order.Id) return BadRequest();
+            var existing = await _context.Orders.FindAsync(id);
 
-            _context.Entry(order).State = EntityState.Modified;
+            if (existing == null)
+                return NotFound("Không tìm thấy đơn hàng");
+
+            existing.UserId = order.UserId;
+            existing.TotalPrice = order.TotalPrice;
+            existing.Status = order.Status;
+
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
+        // 🔥 DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(long id)
         {
             var order = await _context.Orders.FindAsync(id);
+
             if (order == null) return NotFound();
 
             _context.Orders.Remove(order);
