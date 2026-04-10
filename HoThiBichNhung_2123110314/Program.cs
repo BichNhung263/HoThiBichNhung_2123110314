@@ -1,4 +1,4 @@
-﻿using HoThiBichNhung_2123110314.Data;
+using HoThiBichNhung_2123110314.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace HoThiBichNhung_2123110314
@@ -21,7 +21,11 @@ namespace HoThiBichNhung_2123110314
 
             // Swagger (Render vẫn có thể chạy được)
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c => 
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
