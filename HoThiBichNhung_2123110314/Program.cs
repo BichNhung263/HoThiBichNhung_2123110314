@@ -1,5 +1,4 @@
-﻿
-using HoThiBichNhung_2123110314.Data;
+﻿using HoThiBichNhung_2123110314.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace HoThiBichNhung_2123110314
@@ -10,31 +9,28 @@ namespace HoThiBichNhung_2123110314
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //Đăng ký SQL Server
+            // Đăng ký SQL Server
             builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            // Add services to the container.
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            // Swagger (Render vẫn có thể chạy được)
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
 
-
             app.MapControllers();
+
+            // ✅ Render cần lắng nghe đúng PORT
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+            app.Urls.Add($"http://0.0.0.0:{port}");
 
             app.Run();
         }
