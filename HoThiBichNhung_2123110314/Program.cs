@@ -19,6 +19,13 @@ namespace HoThiBichNhung_2123110314
 
             var app = builder.Build();
 
+            // Tự động chạy Migration để tạo database online khi khởi động
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.Migrate();
+            }
+
             // Swagger (Render vẫn có thể chạy được)
             app.UseSwagger();
             app.UseSwaggerUI(c => 
