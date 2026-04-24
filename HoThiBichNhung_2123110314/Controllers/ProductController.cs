@@ -1,4 +1,4 @@
-﻿using HoThiBichNhung_2123110314.Data;
+using HoThiBichNhung_2123110314.Data;
 using HoThiBichNhung_2123110314.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +30,7 @@ namespace HoThiBichNhung_2123110314.Controllers
                     p.Description,
                     p.Image,
                     p.Quantity,
+                    p.CategoryId,
 
                     Category = new
                     {
@@ -57,6 +58,7 @@ namespace HoThiBichNhung_2123110314.Controllers
                     p.Description,
                     p.Image,
                     p.Quantity,
+                    p.CategoryId,
 
                     Category = new
                     {

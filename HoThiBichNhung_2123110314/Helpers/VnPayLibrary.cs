@@ -42,7 +42,7 @@ namespace HoThiBichNhung_2123110314.Helpers
             {
                 if (!string.IsNullOrEmpty(kv.Value))
                 {
-                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value).Replace("+", "%20") + "&");
+                    data.Append(Uri.EscapeDataString(kv.Key) + "=" + Uri.EscapeDataString(kv.Value) + "&");
                 }
             }
 
@@ -52,9 +52,8 @@ namespace HoThiBichNhung_2123110314.Helpers
                 queryString = queryString.Remove(data.Length - 1, 1);
             }
             
-            string baseUrlWithQuery = baseUrl + "?" + queryString;
             string vnp_SecureHash = HmacSha512(vnp_HashSecret, queryString);
-            string finalUrl = baseUrlWithQuery + "&vnp_SecureHash=" + vnp_SecureHash;
+            string finalUrl = baseUrl + "?" + queryString + "&vnp_SecureHash=" + vnp_SecureHash;
 
             return finalUrl;
         }
@@ -64,9 +63,9 @@ namespace HoThiBichNhung_2123110314.Helpers
             StringBuilder data = new StringBuilder();
             foreach (KeyValuePair<string, string> kv in _responseData)
             {
-                if (!string.IsNullOrEmpty(kv.Key) && kv.Key.StartsWith("vnp_"))
+                if (!string.IsNullOrEmpty(kv.Key) && kv.Key.StartsWith("vnp_") && kv.Key != "vnp_SecureHash")
                 {
-                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+                    data.Append(Uri.EscapeDataString(kv.Key) + "=" + Uri.EscapeDataString(kv.Value) + "&");
                 }
             }
 

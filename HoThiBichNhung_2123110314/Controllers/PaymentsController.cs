@@ -38,8 +38,8 @@ namespace HoThiBichNhung_2123110314.Controllers
         {
             string vnp_Returnurl = "http://localhost:5173/vnpay-return"; // URL frontend nhận kết quả
             string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // URL sandbox VNPay
-            string vnp_TmnCode = "2QXUI4J4"; // Mã website (TMN Code)
-            string vnp_HashSecret = "GET8897A8V6UE0GSS7648ENY90M0E3X6"; // Chuỗi bí mật
+            string vnp_TmnCode = "2QXUI4J4"; // Mã website (TMN Code) Demo chuẩn
+            string vnp_HashSecret = "GET8897A8V6UE0GSS7648ENY90M0E3X6"; // Chuỗi bí mật Demo chuẩn
 
             VnPayLibrary vnpay = new VnPayLibrary();
 
@@ -49,9 +49,9 @@ namespace HoThiBichNhung_2123110314.Controllers
             vnpay.AddRequestData("vnp_Amount", ((long)(request.Amount * 100)).ToString()); // Số tiền nhân 100
             vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData("vnp_CurrCode", "VND");
-            vnpay.AddRequestData("vnp_IpAddr", HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1");
+            vnpay.AddRequestData("vnp_IpAddr", "127.0.0.1"); // Ép về IPv4 để tránh lỗi chữ ký
             vnpay.AddRequestData("vnp_Locale", "vn");
-            vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang: " + request.OrderId);
+            vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang " + request.OrderId);
             vnpay.AddRequestData("vnp_OrderType", "other"); // default value
             vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
             vnpay.AddRequestData("vnp_TxnRef", request.OrderId.ToString()); // Mã tham chiếu của giao dịch (Order ID)
@@ -91,10 +91,28 @@ namespace HoThiBichNhung_2123110314.Controllers
                     if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
                     {
                         // Thanh toán thành công -> Cập nhật đơn hàng
-                        var order = await _context.Orders.FindAsync(orderId);
+                        var order = await _context.Orders
+                            .Include(o => o.OrderDetails)
+                            .FirstOrDefaultAsync(o => o.Id == orderId);
+                            
                         if (order != null)
                         {
-                            order.Status = (OrderStatus)1; // Giả sử 1 là đã thanh toán
+                            order.Status = OrderStatus.Paid; 
+                            
+                            // Trừ số lượng tồn kho
+                            if (order.OrderDetails != null)
+                            {
+                                foreach (var detail in order.OrderDetails)
+                                {
+                                    var product = await _context.Products.FindAsync(detail.ProductId);
+                                    if (product != null)
+                                    {
+                                        product.Quantity -= detail.Quantity;
+                                        if (product.Quantity < 0) product.Quantity = 0;
+                                    }
+                                }
+                            }
+                            
                             await _context.SaveChangesAsync();
                         }
                         return Ok(new { message = "Thanh toán thành công", orderId = orderId });

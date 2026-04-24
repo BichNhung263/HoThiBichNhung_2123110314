@@ -52,6 +52,9 @@ namespace HoThiBichNhung_2123110314
             app.UseAuthorization();
 
             app.MapControllers();
+            
+            // Trang chủ thông báo API đang chạy
+            app.MapGet("/", () => "API PetShop is running successfully!");
 
             // ✅ Chỉ dùng PORT khi deploy (Render)
             if (!app.Environment.IsDevelopment())

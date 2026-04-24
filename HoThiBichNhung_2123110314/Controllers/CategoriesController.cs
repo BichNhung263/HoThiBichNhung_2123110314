@@ -1,4 +1,4 @@
-﻿using HoThiBichNhung_2123110314.Data;
+using HoThiBichNhung_2123110314.Data;
 using HoThiBichNhung_2123110314.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,11 +44,14 @@ namespace HoThiBichNhung_2123110314.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(long id, Category category)
         {
-            if (id != category.Id) return BadRequest();
+            var existing = await _context.Categories.FindAsync(id);
+            if (existing == null) return NotFound();
 
-            _context.Entry(category).State = EntityState.Modified;
+            existing.Name = category.Name;
+            existing.Description = category.Description;
+            existing.Image = category.Image;
+
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 

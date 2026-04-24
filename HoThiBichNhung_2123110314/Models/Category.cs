@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace HoThiBichNhung_2123110314.Models
@@ -11,6 +11,7 @@ namespace HoThiBichNhung_2123110314.Models
         public string Name { get; set; }
 
         public string? Description { get; set; }
+        public string? Image { get; set; }
 
         [JsonIgnore] 
         public ICollection<Product>? Products { get; set; }
