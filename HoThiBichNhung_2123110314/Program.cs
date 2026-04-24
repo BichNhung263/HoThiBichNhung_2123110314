@@ -48,6 +48,7 @@ namespace HoThiBichNhung_2123110314
             app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles(); // Enable static files serving
             app.UseAuthorization();
 
             app.MapControllers();
