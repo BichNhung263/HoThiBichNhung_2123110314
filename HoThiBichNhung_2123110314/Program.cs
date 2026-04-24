@@ -53,8 +53,12 @@ namespace HoThiBichNhung_2123110314
 
             app.MapControllers();
             
-            // Trang chủ thông báo API đang chạy
-            app.MapGet("/", () => "API PetShop is running successfully!");
+            // Tự động chuyển hướng về trang Swagger khi vào link chính
+            app.MapGet("/", (HttpContext context) =>
+            {
+                context.Response.Redirect("/swagger");
+                return Task.CompletedTask;
+            });
 
             // ✅ Chỉ dùng PORT khi deploy (Render)
             if (!app.Environment.IsDevelopment())

@@ -36,29 +36,13 @@ namespace HoThiBichNhung_2123110314.Controllers
         [HttpPost("create-vnpay-url")]
         public IActionResult CreateVnPayUrl([FromBody] VnPayRequest request)
         {
-            string vnp_Returnurl = "http://localhost:5173/vnpay-return"; // URL frontend nhận kết quả
-            string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // URL sandbox VNPay
-            string vnp_TmnCode = "2QXUI4J4"; // Mã website (TMN Code) Demo chuẩn
-            string vnp_HashSecret = "GET8897A8V6UE0GSS7648ENY90M0E3X6"; // Chuỗi bí mật Demo chuẩn
+            // Thay vì dùng VNPay thật, ta dùng VNPay giả để Demo mượt mà
+            string mockPaymentUrl = $"http://localhost:5173/mock-payment?orderId={request.OrderId}&amount={request.Amount}";
+            
+            // Nếu bạn đang chạy trên Render, hãy dùng link Render của Frontend
+            // string mockPaymentUrl = $"https://nhung-frontend.onrender.com/mock-payment?orderId={request.OrderId}&amount={request.Amount}";
 
-            VnPayLibrary vnpay = new VnPayLibrary();
-
-            vnpay.AddRequestData("vnp_Version", "2.1.0");
-            vnpay.AddRequestData("vnp_Command", "pay");
-            vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-            vnpay.AddRequestData("vnp_Amount", ((long)(request.Amount * 100)).ToString()); // Số tiền nhân 100
-            vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
-            vnpay.AddRequestData("vnp_CurrCode", "VND");
-            vnpay.AddRequestData("vnp_IpAddr", "127.0.0.1"); // Ép về IPv4 để tránh lỗi chữ ký
-            vnpay.AddRequestData("vnp_Locale", "vn");
-            vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang " + request.OrderId);
-            vnpay.AddRequestData("vnp_OrderType", "other"); // default value
-            vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-            vnpay.AddRequestData("vnp_TxnRef", request.OrderId.ToString()); // Mã tham chiếu của giao dịch (Order ID)
-
-            string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
-
-            return Ok(new { url = paymentUrl });
+            return Ok(new { url = mockPaymentUrl });
         }
 
         // 🔥 Callback xác nhận kết quả từ VNPay (IPN)
@@ -79,7 +63,7 @@ namespace HoThiBichNhung_2123110314.Controllers
                     }
                 }
 
-                long orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
+                string orderId = vnpay.GetResponseData("vnp_TxnRef");
                 long vnpayTranId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
                 string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
                 string vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
@@ -91,9 +75,10 @@ namespace HoThiBichNhung_2123110314.Controllers
                     if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
                     {
                         // Thanh toán thành công -> Cập nhật đơn hàng
+                        // Lưu ý: Nếu orderId của bạn là string, hãy đảm bảo bảng Orders dùng string hoặc parse ngược lại nếu là số
                         var order = await _context.Orders
                             .Include(o => o.OrderDetails)
-                            .FirstOrDefaultAsync(o => o.Id == orderId);
+                            .FirstOrDefaultAsync(o => o.Id.ToString() == orderId);
                             
                         if (order != null)
                         {
@@ -133,7 +118,7 @@ namespace HoThiBichNhung_2123110314.Controllers
 
     public class VnPayRequest
     {
-        public long OrderId { get; set; }
+        public string OrderId { get; set; }
         public decimal Amount { get; set; }
     }
 }

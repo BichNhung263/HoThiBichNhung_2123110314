@@ -42,7 +42,7 @@ namespace HoThiBichNhung_2123110314.Helpers
             {
                 if (!string.IsNullOrEmpty(kv.Value))
                 {
-                    data.Append(Uri.EscapeDataString(kv.Key) + "=" + Uri.EscapeDataString(kv.Value) + "&");
+                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value).Replace("+", "%20") + "&");
                 }
             }
 
@@ -65,7 +65,7 @@ namespace HoThiBichNhung_2123110314.Helpers
             {
                 if (!string.IsNullOrEmpty(kv.Key) && kv.Key.StartsWith("vnp_") && kv.Key != "vnp_SecureHash")
                 {
-                    data.Append(Uri.EscapeDataString(kv.Key) + "=" + Uri.EscapeDataString(kv.Value) + "&");
+                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value).Replace("+", "%20") + "&");
                 }
             }
 
